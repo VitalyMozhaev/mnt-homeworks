@@ -8,7 +8,7 @@
 выведите в мониторинг и почему?
 
 ```text
-- Нагрузку CPUla - динамика нагрузки будет показывать, когда происходят пиковые нагрузки и достаточно ли в целом ресурсов,
+- Нагрузка CPUla - динамика нагрузки будет показывать, когда происходят пиковые нагрузки и достаточно ли в целом ресурсов,
 возможно нужно масштабировать систему.
 
 - Состояние RAM - т.к. вычислений будет много, необходимо следить, чтобы оперативной памяти было достаточно.
@@ -103,4 +103,67 @@ SLI = (summ_2xx_requests + summ_3xx_requests)/summ_all_requests
 P.S.: количество собираемых метрик должно быть не менее 4-х.
 
 P.P.S.: по желанию можно себя не ограничивать только сбором метрик из `/proc`.
+
+## Ответ:
+
+```text
+import time
+import os
+import json
+from datetime import date
+
+metrics = {}
+
+# Время
+metrics['timestamp'] = int(time.time())
+
+# CPU
+f = open("/proc/loadavg", "r")
+metrics["cpu_la"] = f.read()
+f.close()
+
+# Mem
+f = open("/proc/meminfo", "r")
+meminfo = f.readlines()
+metrics["mem_free"] = meminfo[1]
+metrics["mem_avail"] = meminfo[2]
+f.close()
+
+# Время работы сервера
+f = open("/proc/uptime", "r")
+metrics["uptime"] = f.read()
+f.close()
+
+# Информация о inodes
+f = open("/proc/sys/fs/inode-state", "r")
+metrics["inodes"] = f.read()
+f.close()
+
+# Место на диске в корневом разделе
+metrics["disk"] = os.popen('df -h / | grep /').read()
+
+metrics_json = json.dumps(metrics)
+
+filename = date.today().strftime('%y-%m-%d-awesome-monitoring.log')
+f = open("/var/log/" + filename, "a")
+f.write(metrics_json + "\n")
+f.close()
+
+```
+
+crontab -e
+
+`* * * * * /usr/bin/python3 /home/vagrant/python/metrics.py`
+
+Результат:
+
+```text
+cat /var/log/21-08-08-awesome-monitoring.log
+{"timestamp": 1628447905, "cpu_la": "0.00 0.01 0.00 1/180 2405\n", "mem_free": "MemFree:         7467492 kB\n", "mem_avail": "MemAvailable:    7706024 kB\n", "uptime": "5315.93 10509.12\n", "inodes": "34658\t705\t0\t0\t0\t0\t0\n", "disk": "/dev/mapper/vgvagrant-root   62G  4.2G   54G   8% /\n"}
+{"timestamp": 1628447941, "cpu_la": "0.00 0.00 0.00 2/185 2432\n", "mem_free": "MemFree:         7462152 kB\n", "mem_avail": "MemAvailable:    7700728 kB\n", "uptime": "5351.61 10579.74\n", "inodes": "34705\t705\t0\t0\t0\t0\t0\n", "disk": "/dev/mapper/vgvagrant-root   62G  4.2G   54G   8% /\n"}
+{"timestamp": 1628448001, "cpu_la": "0.00 0.00 0.00 2/185 2479\n", "mem_free": "MemFree:         7461348 kB\n", "mem_avail": "MemAvailable:    7700384 kB\n", "uptime": "5411.81 10698.62\n", "inodes": "34719\t705\t0\t0\t0\t0\t0\n", "disk": "/dev/mapper/vgvagrant-root   62G  4.2G   54G   8% /\n"}
+{"timestamp": 1628448061, "cpu_la": "0.00 0.00 0.00 2/185 2493\n", "mem_free": "MemFree:         7461812 kB\n", "mem_avail": "MemAvailable:    7700888 kB\n", "uptime": "5472.02 10816.83\n", "inodes": "34719\t705\t0\t0\t0\t0\t0\n", "disk": "/dev/mapper/vgvagrant-root   62G  4.2G   54G   8% /\n"}
+{"timestamp": 1628448121, "cpu_la": "0.00 0.00 0.00 2/185 2507\n", "mem_free": "MemFree:         7461812 kB\n", "mem_avail": "MemAvailable:    7700916 kB\n", "uptime": "5532.21 10935.98\n", "inodes": "34719\t705\t0\t0\t0\t0\t0\n", "disk": "/dev/mapper/vgvagrant-root   62G  4.2G   54G   8% /\n"}
+{"timestamp": 1628448181, "cpu_la": "0.00 0.00 0.00 2/186 2525\n", "mem_free": "MemFree:         7460544 kB\n", "mem_avail": "MemAvailable:    7699684 kB\n", "uptime": "5591.41 11052.55\n", "inodes": "34721\t705\t0\t0\t0\t0\t0\n", "disk": "/dev/mapper/vgvagrant-root   62G  4.2G   54G   8% /\n"}
+```
 
