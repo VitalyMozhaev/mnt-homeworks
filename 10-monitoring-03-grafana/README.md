@@ -1,4 +1,4 @@
-# Домашнее задание к занятию "10.03. Grafana"
+# Ответы на домашнее задание к занятию "10.03. Grafana"
 
 ## Задание повышенной сложности
 
@@ -43,8 +43,7 @@
 - Утилизация CPU для nodeexporter (в процентах, 100-idle)
 
 ```text
-(((count(count(node_cpu_seconds_total) by (cpu))) - avg(sum by (mode)(irate(node_cpu_seconds_total{mode='idle'}[5m])))) * 100)
-/ count(count(node_cpu_seconds_total) by (cpu))
+100 - (irate(node_cpu_seconds_total{mode='idle'}[5m]) * 100)
 ```
 
 - CPULA 1/5/15
