@@ -52,15 +52,17 @@ Filebeat следует сконфигурировать для отправки
 ```
 
 ```text
-docker ps
-CONTAINER ID   IMAGE                                                  COMMAND                  CREATED             STATUS          PORTS                                                           NAMES
-4c5c3154d04f   docker.elastic.co/beats/filebeat:7.2.0                 "/usr/local/bin/dock…"   About an hour ago   Up 10 minutes                                                                   filebeat
-f20854311382   docker.elastic.co/logstash/logstash:6.3.2              "/usr/local/bin/dock…"   About an hour ago   Up 10 minutes   5044/tcp, 9600/tcp, 0.0.0.0:5046->5046/tcp, :::5046->5046/tcp   logstash
-219596acfa0b   docker.elastic.co/kibana/kibana:7.11.0                 "/bin/tini -- /usr/l…"   About an hour ago   Up 10 minutes   0.0.0.0:5601->5601/tcp, :::5601->5601/tcp                       kibana
-6b7c5f74b30b   docker.elastic.co/elasticsearch/elasticsearch:7.11.0   "/bin/tini -- /usr/l…"   About an hour ago   Up 10 minutes   0.0.0.0:9200->9200/tcp, :::9200->9200/tcp, 9300/tcp             es-hot
-9063f2b5682c   docker.elastic.co/elasticsearch/elasticsearch:7.11.0   "/bin/tini -- /usr/l…"   About an hour ago   Up 10 minutes   9200/tcp, 9300/tcp                                              es-warm
-4481052749bc   python:3.9-alpine                                      "python3 /opt/run.py"    About an hour ago   Up 10 minutes                                                                   some_app
+docker ps -a
+CONTAINER ID   IMAGE                                                  COMMAND                  CREATED          STATUS                       PORTS                                                 NAMES
+871056c8951a   docker.elastic.co/beats/filebeat:7.2.0                 "/usr/local/bin/dock…"   11 minutes ago   Up 10 minutes                                                                      filebeat
+aaffdb7423a2   docker.elastic.co/kibana/kibana:7.11.0                 "/bin/tini -- /usr/l…"   11 minutes ago   Up 10 minutes                0.0.0.0:5601->5601/tcp, :::5601->5601/tcp             kibana
+fa63bae726aa   docker.elastic.co/logstash/logstash:6.3.2              "/usr/local/bin/dock…"   11 minutes ago   Up 10 minutes                0.0.0.0:5044->5044/tcp, :::5044->5044/tcp, 9600/tcp   logstash
+9a39429505b9   docker.elastic.co/elasticsearch/elasticsearch:7.11.0   "/bin/tini -- /usr/l…"   11 minutes ago   Up 10 minutes                0.0.0.0:9200->9200/tcp, :::9200->9200/tcp, 9300/tcp   es-hot
+c6c04c7956b6   docker.elastic.co/elasticsearch/elasticsearch:7.11.0   "/bin/tini -- /usr/l…"   11 minutes ago   Up 10 minutes                9200/tcp, 9300/tcp                                    es-warm
+f3c957bdfe80   python:3.9-alpine                                      "python3 /opt/run.py"    11 minutes ago   Exited (137) 6 minutes ago                                                         some_app
 ```
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/10-monitoring-04-elk/kibana.png)
 
 ## Задание 2
 
@@ -73,5 +75,7 @@ f20854311382   docker.elastic.co/logstash/logstash:6.3.2              "/usr/loca
 В манифесте директории help также приведенно dummy приложение, которое генерирует рандомные события в stdout контейнера.
 Данные логи должны порождать индекс logstash-* в elasticsearch. Если данного индекса нет - воспользуйтесь советами 
 и источниками из раздела "Дополнительные ссылки" данного ДЗ.
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/10-monitoring-04-elk/logstash.png)
 
  
