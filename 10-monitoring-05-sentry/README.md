@@ -17,6 +17,10 @@ Free cloud account имеет следующие ограничения:
 
 Для выполнения задания - пришлите скриншот меню Projects.
 
+## Ответ:
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/10-monitoring-05-sentry/projects.png)
+
 ## Задание 2
 
 Создайте python проект и нажмите `Generate sample event` для генерации тестового события.
@@ -27,6 +31,16 @@ Free cloud account имеет следующие ограничения:
 
 Для выполнения задание предоставьте скриншот `Stack trace` из этого события и список событий проекта, 
 после нажатия `Resolved`.
+
+## Ответ:
+
+`Stack trace`
+
+![Stack trace](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/10-monitoring-05-sentry/test_message.png)
+
+`Resolved`
+
+![Resolved](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/10-monitoring-05-sentry/resolved.png)
 
 ## Задание 3
 
@@ -47,6 +61,10 @@ Free cloud account имеет следующие ограничения:
 
 Дополнительно поэкспериментируйте с правилами алёртинга. 
 Выбирайте разные условия отправки и создавайте sample events. 
+
+## Ответ:
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/10-monitoring-05-sentry/alert_email.png)
 
 ## Задание повышенной сложности
 
