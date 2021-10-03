@@ -271,7 +271,7 @@ ubuntu                     : ok=3    changed=0    unreachable=0    failed=0    s
 
 12. Заполните `README.md` ответами на вопросы. Сделайте `git push` в ветку `master`. В ответе отправьте ссылку на ваш открытый репозиторий с изменённым `playbook` и заполненным `README.md`.
 
-
+Ссылка на репозиторий: https://github.com/VitalyMozhaev/mnt-homeworks-ansible
 
 ## Необязательная часть
 
