@@ -1,4 +1,4 @@
-## Тест для коллекции my_own_collection с модулем my_own_module.py
+## Тест коллекции my_own_collection с модулем my_own_module.py
 
 Репозиторий с коллекцией:
 
