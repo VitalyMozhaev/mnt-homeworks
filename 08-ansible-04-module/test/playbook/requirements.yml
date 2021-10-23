@@ -1,0 +1,5 @@
+---
+  collections:
+    - name: git@github.com:VitalyMozhaev/my_own_collection.git
+      type: git
+      version: 1.0.0
