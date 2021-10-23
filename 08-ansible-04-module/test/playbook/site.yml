@@ -1,0 +1,5 @@
+---
+- name: Playbook for my own collection
+  hosts: all
+  roles:
+    - my_own_namespace.my_own_collection.my_own_role
