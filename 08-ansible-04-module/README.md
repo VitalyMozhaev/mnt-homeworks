@@ -16,6 +16,12 @@
 Наша цель - написать собственный module, который мы можем использовать в своей role, через playbook. Всё это должно быть собрано в виде collection и отправлено в наш репозиторий.
 
 1. В виртуальном окружении создать новый `my_own_module.py` файл
+
+```bash
+cd lib/ansible/modules
+touch my_own_module.py
+```
+
 2. Наполнить его содержимым:
 ```python
 #!/usr/bin/python
@@ -156,20 +162,299 @@ if __name__ == '__main__':
 Или возьмите данное наполнение из [статьи](https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_general.html#creating-a-module).
 
 3. Заполните файл в соответствии с требованиями ansible так, чтобы он выполнял основную задачу: module должен создавать текстовый файл на удалённом хосте по пути, определённом в параметре `path`, с содержимым, определённым в параметре `content`.
+
+```python
+# Проверяем последний символ в стоке path, если нет /, добавляем его
+if module.params['path'][:-1] == '/':
+  gen_path = module.params['path'] + module.params['name']
+else:
+  gen_path = module.params['path'] + '/' + module.params['name']
+
+# Проверяем, надо ли создавать или пересоздавать нужный файл
+need_create = os.access(gen_path, os.F_OK) and not module.params['force']
+if module.check_mode or need_create:
+    module.exit_json(**result)
+
+# Создаём путь до файла и если он уже есть, продолжаем без ошибки
+os.makedirs(module.params['path'], exist_ok=True)
+# Записываем побитово содержимое переменной content в нужный файл
+with open(gen_path, 'wb') as newone:
+  newone.write(to_bytes(module.params['content']))
+
+# Выводим сообщение и параметры
+result['original_message'] = 'Successful created'
+result['message'] = 'End'
+result['changed'] = True
+result['path'] = module.params['path']
+result['content'] = module.params['content']
+```
+
 4. Проверьте module на исполняемость локально.
+
+Для локального теста создадим файл `ansible/payload.json` с аргументами:
+
+```json
+{
+  "ANSIBLE_MODULE_ARGS": {
+    "name": "Hello.txt",
+    "path": "/tmp/my_own_files",
+    "content": "Test content",
+    "force": false
+  }
+}
+```
+
+```bash
+# Запускаем локальный тест
+python -m ansible.modules.my_own_module payload.json
+
+{"changed": false, "original_message": "", "message": "", "invocation": 
+{"module_args": {"name": "Hello", "path": "/tmp/test_create_file", "content": "content text", "force":false}}}
+```
+
 5. Напишите single task playbook и используйте module в нём.
+
+```yml
+---
+  - name: Run the module my_own_module
+    my_own_module:
+      name: "{{ p_name }}"
+      path: "{{ p_path }}"
+      content: "{{ p_content }}"
+      force: false
+    register: testout
+  - name: dump test output
+    debug:
+      msg: '{{ testout }}'
+```
+
 6. Проверьте через playbook на идемпотентность.
+
+```bash
+ansible-playbook playbook.yml
+
+PLAY [Test for module my_own_module] *******************************************
+
+TASK [Run the testing module] **************************************************
+changed: [localhost]
+
+TASK [dump test output] ********************************************************
+ok: [localhost] => {
+    "msg": {
+        "changed": true,
+        "content": "Test content",
+        "failed": false,
+        "gid": 1000,
+        "group": "vagrant",
+        "message": "End",
+        "mode": "0775",
+        "original_message": "Successful created",
+        "owner": "vagrant",
+        "path": "/tmp/my_own_files/",
+        "size": 4096,
+        "state": "directory",
+        "uid": 1000
+    }
+}
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+# Содержимое созданного файла
+cat /tmp/my_own_files/Hello.txt
+Test content
+
+
+# Тест на идемпотентность
+ansible-playbook playbook.yml
+
+PLAY [Test for module my_own_module] *******************************************
+
+TASK [Run the testing module] **************************************************
+ok: [localhost]
+
+TASK [dump test output] ********************************************************
+ok: [localhost] => {
+    "msg": {
+        "changed": false,
+        "failed": false,
+        "message": "",
+        "original_message": ""
+    }
+}
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+```
+
 7. Выйдите из виртуального окружения.
+
+```
+deactivate
+```
+
 8. Инициализируйте новую collection: `ansible-galaxy collection init my_own_namespace.my_own_collection`
+
+```bash
+ansible-galaxy collection init my_own_namespace.my_own_collection
+- Collection my_own_namespace.my_own_collection was created successfully
+
+tree
+.
+└── my_own_collection
+    ├── docs
+    ├── galaxy.yml
+    ├── plugins
+    │   └── README.md
+    ├── README.md
+    └── roles
+
+4 directories, 3 files
+```
+
 9. В данную collection перенесите свой module в соответствующую директорию.
+
+```bash
+ tree
+.
+└── my_own_collection
+    ├── docs
+    ├── galaxy.yml
+    ├── plugins
+    │   ├── modules
+    │   │   └── my_own_module.py
+    │   └── README.md
+    ├── README.md
+    └── roles
+
+5 directories, 4 files
+```
+
 10. Single task playbook преобразуйте в single task role и перенесите в collection. У role должны быть default всех параметров module
+
+```bash
+tree
+.
+├── docs
+├── galaxy.yml
+├── plugins
+│   ├── modules
+│   │   └── my_own_module.py
+│   └── README.md
+├── README.md
+└── roles
+    └── my_own_role
+        ├── defaults
+        │   └── main.yml
+        ├── handlers
+        │   └── main.yml
+        ├── meta
+        │   └── main.yml
+        ├── tasks
+        │   └── main.yml
+        └── vars
+            └── main.yml
+
+10 directories, 9 files
+```
+
 11. Создайте playbook для использования этой role.
+
+```bash
+tree
+.
+├── inventories
+│   └── prod
+│       └── hosts.yml
+├── requirements.yml
+└── site.yml
+```
+
 12. Заполните всю документацию по collection, выложите в свой репозиторий, поставьте тег `1.0.0` на этот коммит.
 13. Создайте .tar.gz этой collection: `ansible-galaxy collection build` в корневой директории collection.
+
+```
+ansible-galaxy collection build
+Created collection for my_own_namespace.my_own_collection at /home/vagrant/ansible/8.4/my_own_namespace/my_own_collection/my_own_namespace-my_own_collection-1.0.0.tar.gz
+```
+
 14. Создайте ещё одну директорию любого наименования, перенесите туда single task playbook и архив c collection.
 15. Установите collection из локального архива: `ansible-galaxy collection install <archivename>.tar.gz`
+
+```bash
+ansible-galaxy collection install -p collections my_own_namespace-my_own_collection-1.0.0.tar.gz
+Starting galaxy collection install process
+Process install dependency map
+Starting collection install process
+Installing 'my_own_namespace.my_own_collection:1.0.0' to '/home/vagrant/ansible/8.4/my_own_namespace/playbook/collections/ansible_collections/my_own_namespace/my_own_collection'
+my_own_namespace.my_own_collection:1.0.0 was installed successfully
+```
+
 16. Запустите playbook, убедитесь, что он работает.
+
+```bash
+sudo ansible-playbook site.yml -i inventories/prod/hosts.yml
+
+PLAY [Playbook for my own collection] ******************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+TASK [my_own_namespace.my_own_collection.my_own_role : Run the module my_own_module] ***
+changed: [localhost]
+
+TASK [my_own_namespace.my_own_collection.my_own_role : dump test output] *******
+ok: [localhost] => {
+    "msg": {
+        "changed": true,
+        "content": "Content for my module",
+        "failed": false,
+        "gid": 0,
+        "group": "root",
+        "message": "End",
+        "mode": "0755",
+        "original_message": "Successful created",
+        "owner": "root",
+        "path": "/tmp/my_own_files/",
+        "size": 4096,
+        "state": "directory",
+        "uid": 0
+    }
+}
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+# Проверяем идемпотентность:
+sudo ansible-playbook site.yml -i inventories/prod/hosts.yml
+
+PLAY [Playbook for my own collection] ******************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+TASK [my_own_namespace.my_own_collection.my_own_role : Run the module my_own_module] ***
+ok: [localhost]
+
+TASK [my_own_namespace.my_own_collection.my_own_role : dump test output] *******
+ok: [localhost] => {
+    "msg": {
+        "changed": false,
+        "failed": false,
+        "message": "",
+        "original_message": ""
+    }
+}
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+```
+
 17. В ответ необходимо прислать ссылку на репозиторий с collection
+
+https://github.com/VitalyMozhaev/my_own_collection
 
 ## Необязательная часть
 
