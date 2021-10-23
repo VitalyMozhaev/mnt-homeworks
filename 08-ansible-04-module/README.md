@@ -454,7 +454,13 @@ localhost                  : ok=3    changed=0    unreachable=0    failed=0    s
 
 17. В ответ необходимо прислать ссылку на репозиторий с collection
 
+### Репозиторий с коллекцией my_own_collection:
+
 https://github.com/VitalyMozhaev/my_own_collection
+
+### Тест коллекции my_own_collection с модулем my_own_module.py:
+
+https://github.com/VitalyMozhaev/mnt-homeworks/tree/main/08-ansible-04-module/test
 
 ## Необязательная часть
 
