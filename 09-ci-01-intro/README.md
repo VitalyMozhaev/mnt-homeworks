@@ -22,7 +22,48 @@
 4. On test <-> On develop, Done
 5. Done <-> Closed, Open
 
-Создать задачу с типом bug, попытаться провести его по всему workflow до Done. Создать задачу с типом epic, к ней привязать несколько задач с типом task, провести их по всему workflow до Done. При проведении обеих задач по статусам использовать kanban. Вернуть задачи в статус Open.
+Создать задачу с типом bug, попытаться провести его по всему workflow до Done. Создать задачу с типом epic, к ней привязать несколько задач с типом task, провести их по всему workflow до Done. При проведении обеих задач по статусам использовать kanban. 
+
+Вернуть задачи в статус Open.
+
 Перейти в scrum, запланировать новый спринт, состоящий из задач эпика и одного бага, стартовать спринт, провести задачи до состояния Closed. Закрыть спринт.
 
 Если всё отработало в рамках ожидания - выгрузить схемы workflow для импорта в XML. Файлы с workflow приложить к решению задания.
+
+### Схема workflow для bug:
+
+https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-01-intro/bug.xml
+
+### Схема workflow для остальных типов задач, кроме bug:
+
+https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-01-intro/all_not_bugs.xml
+
+## Screenshots:
+
+### Схема workflow для bug
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-01-intro/workflow_bug.png)
+
+### Схема workflow для остальных типов задач, кроме bug:
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-01-intro/workflow_all_not_bugs.png)
+
+### Схема workflow
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-01-intro/my_scheme.png)
+
+### Kanban начало
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-01-intro/Kanban_open.png)
+
+### Kanban конец
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-01-intro/Kanban_end.png)
+
+### Scrum начало
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-01-intro/Scrum_open.png)
+
+### Scrum конец
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-01-intro/Scrum_end.png)
