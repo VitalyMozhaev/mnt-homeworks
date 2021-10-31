@@ -103,7 +103,9 @@ pipeline {
 
 3. Перенести Declarative Pipeline в репозиторий в файл `Jenkinsfile`
 
-screen + screen
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-03-jenkins/pipeline_jenkins.png)
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-03-jenkins/pipeline_jenkins_run.png)
 
 4. Перенастроить Job на использование `Jenkinsfile` из репозитория
 
@@ -160,7 +162,7 @@ node("ansible_docker"){
 
 7. Проверить работоспособность, исправить ошибки, исправленный Pipeline вложить в репозитрий в файл `ScriptedJenkinsfile`
 
-screen
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-03-jenkins/pipeline_scripted_run.png)
 
 8. Отправить ссылку на репозиторий в ответе
 
