@@ -33,7 +33,7 @@
 
 ### Ответ:
 
-Screen
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-06-gitlab/issue.png)
 
 ### Developer
 
@@ -44,7 +44,9 @@ Screen
 
 ### Ответ:
 
-Screen
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-06-gitlab/merge_request.png)
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-06-gitlab/merge_request_build.png)
 
 ### Tester
 
@@ -54,7 +56,25 @@ Screen
 
 ### Ответ:
 
-Screen
+Тест на отдельной виртуалке:
+
+```bash
+docker pull registry.gitlab.com/malik-vn/mnt-7/python-api
+docker run -d -p 5290:5290 --name python-api registry.gitlab.com/malik-vn/mnt-7/python-api:latest
+
+curl localhost:5290/rest/api/get_info
+{"version": 3, "method": "GET", "message": "Running"}
+```
+
+Автоматизировал тест после сборки через stage test (необязательная часть)
+
+```bash
+docker pull registry.gitlab.com/malik-vn/mnt-7/python-api
+docker run -d -p 5290:5290 --name python-api registry.gitlab.com/malik-vn/mnt-7/python-api:latest
+docker exec python-api curl -s http://0.0.0.0:5290/rest/api/get_info | grep Running && echo "Test succeeded"
+{"version": 3, "method": "GET", "message": "Running"}
+Test succeeded
+```
 
 ## Итог
 
@@ -62,7 +82,7 @@ Screen
 
 ### Ответ:
 
-Ссылка на репозиторий: https://gitlab.com/malik-vn/mnt-7/-/tree/main
+Ссылка на репозиторий: https://gitlab.com/malik-vn/mnt-7
 
 ## Необязательная часть
 
@@ -72,6 +92,9 @@ Screen
 ### Ответ:
 
 Дописал stage test в pipeline.
+
 Ссылка на .gitlab-ci.yml: https://gitlab.com/malik-vn/mnt-7/-/blob/main/.gitlab-ci.yml
 
-Screen
+Сборка с тестом:
+
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-06-gitlab/Build_and_Test.png)
