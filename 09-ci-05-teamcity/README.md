@@ -16,30 +16,30 @@
 
 1. Создайте новый проект в teamcity на основе fork
 
-Screen
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-05-teamcity/Screens/1.%20new_build.png)
 
 2. Сделайте autodetect конфигурации
 
-Screen
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-05-teamcity/Screens/2.%20autodetect.png)
 
 3. Сохраните необходимые шаги, запустите первую сборку master'a
 
-Screen
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-05-teamcity/Screens/3.%20first_build.png)
 
 4. Поменяйте условия сборки: если сборка по ветке `master`, то должен происходит `mvn clean package deploy`, иначе `mvn clean test`
 
-Screen
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-05-teamcity/Screens/4.%20Test%20or%20deploy.png)
 
 5. Для deploy будет необходимо загрузить [settings.xml](./teamcity/settings.xml) в набор конфигураций maven у teamcity, предварительно записав туда креды для подключения к nexus
 
-Screen
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-05-teamcity/Screens/5.%20Settings.png)
 
 6. В pom.xml необходимо поменять ссылки на репозиторий и nexus
 7. Запустите сборку по master, убедитесь что всё прошло успешно, артефакт появился в nexus
 
-Screen
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-05-teamcity/Screens/7.png)
 
-Screen
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-05-teamcity/Screens/7_1.%20Artifact%20in%20Nexus.png)
 
 8. Мигрируйте `build configuration` в репозиторий
 9. Создайте отдельную ветку `feature/add_reply` в репозитории
@@ -108,14 +108,14 @@ public class WelcomerTest {
 12. Сделайте push всех изменений в новую ветку в репозиторий
 13. Убедитесь что сборка самостоятельно запустилась, тесты прошли успешно
 
-Screen
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-05-teamcity/Screens/13.%20Build%20on%20branch%20no%20master.png)
 
 14. Внесите изменения из произвольной ветки `feature/add_reply` в `master` через `Merge`
 15. Убедитесь, что нет собранного артефакта в сборке по ветке `master`
 16. Настройте конфигурацию так, чтобы она собирала `.jar` в артефакты сборки
 17. Проведите повторную сборку мастера, убедитесь, что сбора прошла успешно и артефакты собраны
 
-Screen
+![](https://github.com/VitalyMozhaev/mnt-homeworks/blob/main/09-ci-05-teamcity/Screens/17.%20Build%20and%20artifacts%20on%20master.png)
 
 18. Проверьте, что конфигурация в репозитории содержит все настройки конфигурации из teamcity
 19. В ответ предоставьте ссылку на репозиторий
